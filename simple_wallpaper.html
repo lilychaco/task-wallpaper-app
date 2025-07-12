@@ -395,12 +395,23 @@
         try {
           alert("🔄 画像生成を開始します...");
           
+          // 一時的にプレビューを375px幅にして画像生成
+          const originalStyle = preview.getAttribute('style') || '';
+          preview.style.width = '375px';
+          preview.style.maxWidth = '375px';
+          preview.style.minWidth = '375px';
+          
+          // 少し待ってレイアウトを安定させる
+          await new Promise(resolve => setTimeout(resolve, 200));
+          
           // タイムアウト付きでhtml2canvas実行
           const canvas = await Promise.race([
             html2canvas(preview, {
+              width: 375,
+              height: 812,
               scale: 1,
               backgroundColor: null,
-              logging: true,
+              logging: false,
               useCORS: false,
               allowTaint: false,
               foreignObjectRendering: false,
@@ -411,6 +422,13 @@
               setTimeout(() => reject(new Error('タイムアウト')), 10000)
             )
           ]);
+          
+          // 元のスタイルに戻す
+          if (originalStyle) {
+            preview.setAttribute('style', originalStyle);
+          } else {
+            preview.removeAttribute('style');
+          }
 
           alert("✅ キャンバス生成完了");
 
