@@ -325,6 +325,8 @@
 
         // 画像モーダル表示
         function showImageModal(dataURL) {
+            console.log('showImageModal called');
+            alert('モーダル表示開始');
             const modal = document.createElement('div');
             modal.id = 'imageModal';
             modal.style.cssText = `
@@ -401,8 +403,11 @@
             modal.appendChild(img);
             modal.appendChild(instruction);
             document.body.appendChild(modal);
-
-            alert('✅ 画像を表示しました！\n画像を長押しして「画像を保存」を選択してください。');
+            console.log('Modal appended to body');
+            
+            setTimeout(() => {
+                alert('✅ 画像を表示しました！\n画像を長押しして「画像を保存」を選択してください。');
+            }, 100);
         }
 
         // PWA Service Worker登録
