@@ -322,42 +322,117 @@
                     return;
                 }
                 
-                // ファイル名を生成
-                const today = new Date().toISOString().split('T')[0];
-                const filename = `wallpaper-${today}.png`;
-                
-                // Blobを作成してダウンロード
-                const byteCharacters = atob(dataURL.split(',')[1]);
-                const byteNumbers = new Array(byteCharacters.length);
-                for (let i = 0; i < byteCharacters.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
-                }
-                const byteArray = new Uint8Array(byteNumbers);
-                const blob = new Blob([byteArray], {type: 'image/png'});
-                
-                // ダウンロードリンクを作成
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = filename;
-                link.style.display = 'none';
-                
-                // bodyに追加してクリック後削除
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                // URLオブジェクトを解放
-                URL.revokeObjectURL(link.href);
-                
-                // 成功メッセージ
-                setTimeout(() => {
-                    alert('✅ 壁紙をダウンロードしました！\n\n📱 スマホでの設定方法:\n1. ブラウザのダウンロード履歴を確認\n2. 画像をタップして表示\n3. 共有ボタンから写真アプリに保存\n4. 設定→壁紙から選択');
-                }, 500);
+                // 画像表示エリアを作成
+                showSaveableImage(dataURL);
                 
             } catch (error) {
                 console.error('ダウンロードエラー:', error);
                 alert('❌ ダウンロードに失敗しました。\n\nプレビューを更新してから再試行してください。');
             }
+        }
+
+        // 保存可能な画像を表示
+        function showSaveableImage(dataURL) {
+            // 既存のモーダルがあれば削除
+            const existingModal = document.getElementById('saveModal');
+            if (existingModal) {
+                document.body.removeChild(existingModal);
+            }
+
+            // モーダル作成
+            const modal = document.createElement('div');
+            modal.id = 'saveModal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.95);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                padding: 20px;
+                box-sizing: border-box;
+            `;
+
+            // 画像要素
+            const img = document.createElement('img');
+            img.src = dataURL;
+            img.alt = '壁紙画像';
+            img.style.cssText = `
+                max-width: 90%;
+                max-height: 60%;
+                border-radius: 15px;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+                user-select: none;
+                -webkit-user-select: none;
+                -webkit-touch-callout: default;
+            `;
+
+            // 説明テキスト
+            const instruction = document.createElement('div');
+            instruction.style.cssText = `
+                color: white;
+                text-align: center;
+                margin-top: 30px;
+                padding: 20px;
+                background: rgba(255,255,255,0.1);
+                border-radius: 15px;
+                font-size: 18px;
+                line-height: 1.6;
+                max-width: 350px;
+            `;
+            instruction.innerHTML = `
+                <h3 style="margin-top: 0; color: #fff; font-size: 20px;">📱 保存方法</h3>
+                <p style="margin: 10px 0;">画像を<strong>長押し</strong>してください</p>
+                <p style="margin: 10px 0;">「画像を保存」または<br>「写真に保存」を選択</p>
+                <p style="margin: 10px 0; font-size: 14px; opacity: 0.8;">保存後は設定→壁紙から選択できます</p>
+            `;
+
+            // 閉じるボタン
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '✕ 閉じる';
+            closeBtn.style.cssText = `
+                position: absolute;
+                top: 30px;
+                right: 30px;
+                background: rgba(255,255,255,0.2);
+                color: white;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 25px;
+                font-size: 16px;
+                cursor: pointer;
+                backdrop-filter: blur(10px);
+                z-index: 10001;
+            `;
+
+            // イベントリスナー
+            closeBtn.onclick = () => {
+                document.body.removeChild(modal);
+            };
+
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            };
+
+            // モーダルに要素を追加
+            modal.appendChild(closeBtn);
+            modal.appendChild(img);
+            modal.appendChild(instruction);
+            
+            // bodyに追加
+            document.body.appendChild(modal);
+
+            // 少し遅れてアラート表示
+            setTimeout(() => {
+                alert('✅ 画像を表示しました！\n\n画像を長押しして「画像を保存」を選択してください。');
+            }, 300);
         }
 
 
