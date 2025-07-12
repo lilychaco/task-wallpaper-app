@@ -393,16 +393,20 @@
         const preview = document.getElementById("preview");
 
         try {
+          alert("🔄 画像生成を開始します...");
+          
           // html2canvasでプレビューを画像に変換
           const canvas = await html2canvas(preview, {
             width: 375,
             height: 812,
-            scale: 3,
+            scale: 2,
             backgroundColor: null,
             logging: false,
             useCORS: true,
             allowTaint: true
           });
+
+          alert("✅ キャンバス生成完了");
 
           const dataURL = canvas.toDataURL("image/png", 1.0);
 
@@ -414,12 +418,14 @@
             return;
           }
 
+          alert(`📊 画像データサイズ: ${Math.round(dataURL.length / 1024)}KB`);
+
           // 画像表示エリアを作成
           showSaveableImage(dataURL);
         } catch (error) {
           console.error("ダウンロードエラー:", error);
           alert(
-            "❌ ダウンロードに失敗しました。\n\nプレビューを更新してから再試行してください。"
+            "❌ エラーが発生しました: " + error.message
           );
         }
       }
