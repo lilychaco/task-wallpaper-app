@@ -238,11 +238,11 @@
         }
 
         .preview {
-          width: 85% !important;
-          max-width: 320px !important;
+          width: 100%;
+          max-width: 375px;
           height: 600px !important;
-          margin: 15px auto !important;
-          padding: 60px 20px !important;
+          margin: 15px auto;
+          padding: 60px 0cqmax !important;
         }
 
         button {
@@ -394,16 +394,16 @@
 
         try {
           alert("🔄 画像生成を開始します...");
-          
+
           // 一時的にプレビューを375px幅にして画像生成
           const originalStyle = preview.getAttribute('style') || '';
           preview.style.width = '375px';
           preview.style.maxWidth = '375px';
           preview.style.minWidth = '375px';
-          
+
           // 少し待ってレイアウトを安定させる
           await new Promise(resolve => setTimeout(resolve, 200));
-          
+
           // タイムアウト付きでhtml2canvas実行
           const canvas = await Promise.race([
             html2canvas(preview, {
@@ -418,11 +418,11 @@
               imageTimeout: 15000,
               removeContainer: false
             }),
-            new Promise((_, reject) => 
+            new Promise((_, reject) =>
               setTimeout(() => reject(new Error('タイムアウト')), 10000)
             )
           ]);
-          
+
           // 元のスタイルに戻す
           if (originalStyle) {
             preview.setAttribute('style', originalStyle);
