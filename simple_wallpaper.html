@@ -316,23 +316,42 @@
 
                 const dataURL = canvas.toDataURL('image/png', 1.0);
                 
-                // 直接ダウンロードを試行
-                const link = document.createElement('a');
-                const today = new Date().toISOString().split('T')[0];
-                link.download = `wallpaper-${today}.png`;
-                link.href = dataURL;
-                
                 // ファイルサイズをチェック
                 if (dataURL.length < 1000) {
                     alert('❌ 画像生成に失敗しました。プレビューを更新してから再試行してください。');
                     return;
                 }
                 
+                // ファイル名を生成
+                const today = new Date().toISOString().split('T')[0];
+                const filename = `wallpaper-${today}.png`;
+                
+                // Blobを作成してダウンロード
+                const byteCharacters = atob(dataURL.split(',')[1]);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], {type: 'image/png'});
+                
+                // ダウンロードリンクを作成
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                link.style.display = 'none';
+                
+                // bodyに追加してクリック後削除
+                document.body.appendChild(link);
                 link.click();
+                document.body.removeChild(link);
+                
+                // URLオブジェクトを解放
+                URL.revokeObjectURL(link.href);
                 
                 // 成功メッセージ
                 setTimeout(() => {
-                    alert('✅ 壁紙をダウンロードしました！\n\n📱 スマホでの設定方法:\n1. ダウンロードフォルダを確認\n2. 画像を長押しして写真アプリに保存\n3. 設定→壁紙から選択');
+                    alert('✅ 壁紙をダウンロードしました！\n\n📱 スマホでの設定方法:\n1. ブラウザのダウンロード履歴を確認\n2. 画像をタップして表示\n3. 共有ボタンから写真アプリに保存\n4. 設定→壁紙から選択');
                 }, 500);
                 
             } catch (error) {
