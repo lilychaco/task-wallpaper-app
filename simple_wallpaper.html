@@ -239,7 +239,7 @@
 
         .preview {
           width: 85% !important;
-          max-width: 280px !important;
+          max-width: 320px !important;
           height: 600px !important;
           margin: 15px auto !important;
           padding: 60px 20px !important;
@@ -397,8 +397,6 @@
           
           // html2canvasでプレビューを画像に変換
           const canvas = await html2canvas(preview, {
-            width: 375,
-            height: 812,
             scale: 2,
             backgroundColor: null,
             logging: false,
