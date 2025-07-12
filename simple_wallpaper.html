@@ -312,13 +312,60 @@
                     useCORS: true
                 });
 
-                const link = document.createElement('a');
+                const dataURL = canvas.toDataURL('image/png');
                 const today = new Date().toISOString().split('T')[0];
-                link.download = `wallpaper-${today}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-
-                alert('✅ 壁紙をダウンロードしました！\nスマホに送信して壁紙に設定してください。');
+                
+                // スマホ対応：新しいタブで画像表示
+                const newWindow = window.open('', '_blank');
+                if (newWindow) {
+                    newWindow.document.write(`
+                        <html>
+                            <head>
+                                <title>壁紙画像 - 長押しで保存</title>
+                                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                <style>
+                                    body { 
+                                        margin: 0; 
+                                        padding: 20px; 
+                                        background: #f0f0f0; 
+                                        text-align: center; 
+                                        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+                                    }
+                                    img { 
+                                        max-width: 100%; 
+                                        height: auto; 
+                                        border-radius: 20px; 
+                                        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                                    }
+                                    .instruction {
+                                        margin-top: 20px;
+                                        padding: 15px;
+                                        background: white;
+                                        border-radius: 10px;
+                                        color: #333;
+                                    }
+                                </style>
+                            </head>
+                            <body>
+                                <h2>📱 壁紙画像</h2>
+                                <img src="${dataURL}" alt="壁紙" />
+                                <div class="instruction">
+                                    <p><strong>📥 保存方法:</strong></p>
+                                    <p>画像を<strong>長押し</strong>して「画像を保存」を選択</p>
+                                    <p>または画像を<strong>タップ</strong>して詳細表示から保存</p>
+                                </div>
+                            </body>
+                        </html>
+                    `);
+                    alert('✅ 新しいタブで画像を表示しました！\n画像を長押しして「画像を保存」を選択してください。');
+                } else {
+                    // Fallback: 通常のダウンロード
+                    const link = document.createElement('a');
+                    link.download = `wallpaper-${today}.png`;
+                    link.href = dataURL;
+                    link.click();
+                    alert('✅ 壁紙をダウンロードしました！\nダウンロードフォルダまたはブラウザの履歴を確認してください。');
+                }
             } catch (error) {
                 console.error('ダウンロードエラー:', error);
                 alert('❌ ダウンロードに失敗しました。');
