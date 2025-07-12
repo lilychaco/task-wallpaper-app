@@ -8,7 +8,7 @@
     <!-- PWA設定 -->
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#007aff" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="壁紙メーカー" />
     <link rel="apple-touch-icon" href="icon-192.png" />
@@ -78,7 +78,7 @@
       }
 
       .preview {
-        width: 85% !important;
+        width: 85%;
         max-width: 375px !important;
         height: 812px;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -89,7 +89,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 80px 30px;
+        padding: 80px 10px;
         text-align: center;
         color: white;
         font-size: 16px;
@@ -230,7 +230,7 @@
       @media (max-width: 768px) {
         .container {
           margin: 10px;
-          padding: 20px;
+          padding: 10px;
         }
 
         textarea {
@@ -242,8 +242,10 @@
           max-width: 375px;
           height: 600px !important;
           margin: 15px auto;
-          padding: 60px 0cqmax !important;
+          padding: 60px 0px;
         }
+
+
 
         button {
           width: 100%;
@@ -393,7 +395,6 @@
         const preview = document.getElementById("preview");
 
         try {
-          alert("🔄 画像生成を開始します...");
 
           // 一時的にプレビューを375px幅にして画像生成
           const originalStyle = preview.getAttribute('style') || '';
@@ -430,8 +431,6 @@
             preview.removeAttribute('style');
           }
 
-          alert("✅ キャンバス生成完了");
-
           const dataURL = canvas.toDataURL("image/png", 1.0);
 
           // ファイルサイズをチェック
@@ -442,7 +441,6 @@
             return;
           }
 
-          alert(`📊 画像データサイズ: ${Math.round(dataURL.length / 1024)}KB`);
 
           // 画像表示エリアを作成
           showSaveableImage(dataURL);
