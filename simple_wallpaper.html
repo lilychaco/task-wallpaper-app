@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>タスク壁紙メーカー</title>
-    
+
     <!-- PWA設定 -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#007aff">
@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="壁紙メーカー">
     <link rel="apple-touch-icon" href="icon-192.png">
-    
+
     <!-- SEO・OGP -->
     <meta name="description" content="毎日のタスクを美しい壁紙に変換するWebアプリ">
     <meta name="keywords" content="壁紙,タスク,TODO,生産性,アプリ">
@@ -205,7 +205,7 @@
 <body>
     <div class="container">
         <h1>📱 シンプル壁紙メーカー</h1>
-        
+
         <div class="step">
             <h3>ステップ1: メモ帳の内容を貼り付け</h3>
             <textarea id="taskInput" placeholder="メモ帳の内容をここに貼り付けてください..."></textarea>
@@ -220,6 +220,7 @@
                 <div class="bg-option bg4" data-bg="bg4"></div>
                 <div class="bg-option bg5" data-bg="bg5"></div>
             </div>
+						
         </div>
 
         <div class="step">
@@ -257,7 +258,7 @@
             const now = new Date();
             const dateStr = now.toLocaleDateString('ja-JP', {
                 year: 'numeric',
-                month: 'long', 
+                month: 'long',
                 day: 'numeric',
                 weekday: 'long'
             });
@@ -268,7 +269,7 @@
         function updatePreview() {
             const text = document.getElementById('taskInput').value;
             const lines = text.split('\n').filter(line => line.trim() !== '');
-            
+
             let title = '';
             let tasks = [];
             let motto = '';
@@ -276,8 +277,8 @@
             // 簡単な解析
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
-                
-                if (i === 0 || line.includes('タスク宣言') || line.includes('目標')) {
+
+                if (line.includes('タスク宣言') || line.includes('目標')) {
                     title = line;
                 } else if (line.includes('-') || line.includes('・') || line.includes('○')) {
                     tasks.push(line.replace(/^[-・○]\s*/, ''));
@@ -286,7 +287,7 @@
                 }
             }
 
-            document.getElementById('previewTitle').textContent = title || '今日のタスク';
+            document.getElementById('previewTitle').textContent = title || '今日のタスク宣言';
             document.getElementById('previewTasks').innerHTML = tasks.slice(0, 6).join('<br>') || 'タスクを入力してください';
             document.getElementById('previewMotto').textContent = motto || '頑張りましょう';
         }
@@ -300,7 +301,7 @@
         // 壁紙ダウンロード
         async function downloadWallpaper() {
             const preview = document.getElementById('preview');
-            
+
             try {
                 const canvas = await html2canvas(preview, {
                     width: 375,
