@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>アイコン作成</title>
+</head>
+<body>
+    <canvas id="canvas192" width="192" height="192" style="border: 1px solid #ccc; margin: 10px;"></canvas>
+    <canvas id="canvas512" width="512" height="512" style="border: 1px solid #ccc; margin: 10px;"></canvas>
+    <br>
+    <button onclick="downloadIcons()">アイコンをダウンロード</button>
+
+    <script>
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            
+            // 背景
+            ctx.fillStyle = '#007aff';
+            ctx.fillRect(0, 0, size, size);
+            
+            // 角を丸くする
+            ctx.globalCompositeOperation = 'destination-in';
+            ctx.beginPath();
+            ctx.roundRect(0, 0, size, size, size * 0.2);
+            ctx.fill();
+            ctx.globalCompositeOperation = 'source-over';
+            
+            // チェックリストアイコン
+            ctx.fillStyle = 'white';
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const scale = size / 192;
+            
+            // タスクボックス1
+            ctx.fillRect(centerX - 50 * scale, centerY - 40 * scale, 12 * scale, 12 * scale);
+            ctx.fillRect(centerX - 30 * scale, centerY - 40 * scale, 60 * scale, 4 * scale);
+            
+            // タスクボックス2
+            ctx.fillRect(centerX - 50 * scale, centerY - 10 * scale, 12 * scale, 12 * scale);
+            ctx.fillRect(centerX - 30 * scale, centerY - 10 * scale, 60 * scale, 4 * scale);
+            
+            // タスクボックス3
+            ctx.fillRect(centerX - 50 * scale, centerY + 20 * scale, 12 * scale, 12 * scale);
+            ctx.fillRect(centerX - 30 * scale, centerY + 20 * scale, 60 * scale, 4 * scale);
+            
+            // チェックマーク
+            ctx.strokeStyle = '#007aff';
+            ctx.lineWidth = 3 * scale;
+            ctx.beginPath();
+            ctx.moveTo(centerX - 47 * scale, centerY - 34 * scale);
+            ctx.lineTo(centerX - 42 * scale, centerY - 29 * scale);
+            ctx.lineTo(centerX - 35 * scale, centerY - 36 * scale);
+            ctx.stroke();
+        }
+        
+        function downloadIcons() {
+            // 192x192アイコン
+            const canvas192 = document.getElementById('canvas192');
+            const link192 = document.createElement('a');
+            link192.download = 'icon-192.png';
+            link192.href = canvas192.toDataURL();
+            link192.click();
+            
+            // 512x512アイコン
+            const canvas512 = document.getElementById('canvas512');
+            const link512 = document.createElement('a');
+            link512.download = 'icon-512.png';
+            link512.href = canvas512.toDataURL();
+            link512.click();
+        }
+        
+        // アイコンを描画
+        drawIcon(document.getElementById('canvas192'), 192);
+        drawIcon(document.getElementById('canvas512'), 512);
+    </script>
+</body>
+</html>
