@@ -395,14 +395,22 @@
         try {
           alert("🔄 画像生成を開始します...");
           
-          // html2canvasでプレビューを画像に変換
-          const canvas = await html2canvas(preview, {
-            scale: 2,
-            backgroundColor: null,
-            logging: false,
-            useCORS: true,
-            allowTaint: true
-          });
+          // タイムアウト付きでhtml2canvas実行
+          const canvas = await Promise.race([
+            html2canvas(preview, {
+              scale: 1,
+              backgroundColor: null,
+              logging: true,
+              useCORS: false,
+              allowTaint: false,
+              foreignObjectRendering: false,
+              imageTimeout: 15000,
+              removeContainer: false
+            }),
+            new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('タイムアウト')), 10000)
+            )
+          ]);
 
           alert("✅ キャンバス生成完了");
 
