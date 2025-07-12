@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タスク壁紙メーカー</title>
+    
+    <!-- PWA設定 -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007aff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="壁紙メーカー">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <!-- SEO・OGP -->
+    <meta name="description" content="毎日のタスクを美しい壁紙に変換するWebアプリ">
+    <meta name="keywords" content="壁紙,タスク,TODO,生産性,アプリ">
+    <meta property="og:title" content="タスク壁紙メーカー">
+    <meta property="og:description" content="毎日のタスクを美しい壁紙に変換">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="icon-512.png">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f7;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1d1d1f;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .step {
+            background: #f6f6f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007aff;
+        }
+
+        .step h3 {
+            margin-top: 0;
+            color: #1d1d1f;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 2px solid #d2d2d7;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .preview {
+            width: 375px;
+            height: 812px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 20px auto;
+            border-radius: 25px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 40px;
+            text-align: center;
+            color: white;
+            font-size: 16px;
+            line-height: 1.8;
+            box-sizing: border-box;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .preview-date {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            opacity: 0.9;
+            width: 300px;
+            text-align: center;
+        }
+
+        .preview-title {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            max-width: 280px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+        }
+
+        .preview-tasks {
+            font-size: 16px;
+            margin-bottom: 30px;
+            max-width: 280px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            text-align: left;
+        }
+
+        .preview-motto {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            font-style: italic;
+            opacity: 0.8;
+            max-width: 280px;
+            text-align: center;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .buttons {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        button {
+            background: #007aff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #0056cc;
+            transform: translateY(-2px);
+        }
+
+        .instruction {
+            background: #e8f5e8;
+            border: 1px solid #34c759;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .instruction h3 {
+            color: #30a46c;
+            margin-top: 0;
+        }
+
+        .bg-selector {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .bg-option {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .bg-option:hover {
+            transform: scale(1.1);
+        }
+
+        .bg-option.active {
+            border-color: #007aff;
+            transform: scale(1.1);
+        }
+
+        .bg1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .bg2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .bg3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .bg4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .bg5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 シンプル壁紙メーカー</h1>
+        
+        <div class="step">
+            <h3>ステップ1: メモ帳の内容を貼り付け</h3>
+            <textarea id="taskInput" placeholder="メモ帳の内容をここに貼り付けてください..."></textarea>
+        </div>
+
+        <div class="step">
+            <h3>ステップ2: 背景色を選択</h3>
+            <div class="bg-selector">
+                <div class="bg-option bg1 active" data-bg="bg1"></div>
+                <div class="bg-option bg2" data-bg="bg2"></div>
+                <div class="bg-option bg3" data-bg="bg3"></div>
+                <div class="bg-option bg4" data-bg="bg4"></div>
+                <div class="bg-option bg5" data-bg="bg5"></div>
+            </div>
+        </div>
+
+        <div class="step">
+            <h3>ステップ3: プレビュー確認</h3>
+            <div class="preview bg1" id="preview">
+                <div class="preview-date" id="previewDate"></div>
+                <div class="preview-title" id="previewTitle">今日のタスク宣言</div>
+                <div class="preview-tasks" id="previewTasks">タスクが表示されます</div>
+                <div class="preview-motto" id="previewMotto">継続は力なり</div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button onclick="updatePreview()">🔄 プレビュー更新</button>
+            <button onclick="downloadWallpaper()">📱 壁紙をダウンロード</button>
+        </div>
+
+        <div class="instruction">
+            <h3>🎯 使い方（超簡単）</h3>
+            <ol>
+                <li><strong>メモ帳でCmd+A → Cmd+C</strong> (全選択してコピー)</li>
+                <li><strong>上のテキストエリアでCmd+V</strong> (貼り付け)</li>
+                <li><strong>好きな背景色をクリック</strong></li>
+                <li><strong>「🔄 プレビュー更新」をクリック</strong></li>
+                <li><strong>「📱 壁紙をダウンロード」をクリック</strong></li>
+                <li><strong>ダウンロードした画像をスマホに送信して壁紙に設定</strong></li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script>
+        // 日付更新
+        function updateDate() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('ja-JP', {
+                year: 'numeric',
+                month: 'long', 
+                day: 'numeric',
+                weekday: 'long'
+            });
+            document.getElementById('previewDate').textContent = dateStr;
+        }
+
+        // プレビュー更新
+        function updatePreview() {
+            const text = document.getElementById('taskInput').value;
+            const lines = text.split('\n').filter(line => line.trim() !== '');
+            
+            let title = '';
+            let tasks = [];
+            let motto = '';
+
+            // 簡単な解析
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                
+                if (i === 0 || line.includes('タスク宣言') || line.includes('目標')) {
+                    title = line;
+                } else if (line.includes('-') || line.includes('・') || line.includes('○')) {
+                    tasks.push(line.replace(/^[-・○]\s*/, ''));
+                } else if (i === lines.length - 1 || line.includes('継続') || line.includes('頑張') || line.includes('よろしく')) {
+                    motto = line;
+                }
+            }
+
+            document.getElementById('previewTitle').textContent = title || '今日のタスク';
+            document.getElementById('previewTasks').innerHTML = tasks.slice(0, 6).join('<br>') || 'タスクを入力してください';
+            document.getElementById('previewMotto').textContent = motto || '頑張りましょう';
+        }
+
+        // 背景変更
+        function changeBackground(bgClass) {
+            const preview = document.getElementById('preview');
+            preview.className = `preview ${bgClass}`;
+        }
+
+        // 壁紙ダウンロード
+        async function downloadWallpaper() {
+            const preview = document.getElementById('preview');
+            
+            try {
+                const canvas = await html2canvas(preview, {
+                    width: 375,
+                    height: 812,
+                    scale: 3,
+                    backgroundColor: null,
+                    logging: false,
+                    useCORS: true
+                });
+
+                const link = document.createElement('a');
+                const today = new Date().toISOString().split('T')[0];
+                link.download = `wallpaper-${today}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                alert('✅ 壁紙をダウンロードしました！\nスマホに送信して壁紙に設定してください。');
+            } catch (error) {
+                console.error('ダウンロードエラー:', error);
+                alert('❌ ダウンロードに失敗しました。');
+            }
+        }
+
+        // PWA Service Worker登録
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(function(registration) {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(function(registrationError) {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+
+        // PWAインストールプロンプト
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            showInstallPromotion();
+        });
+
+        function showInstallPromotion() {
+            const installBanner = document.createElement('div');
+            installBanner.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: #007aff;
+                color: white;
+                padding: 15px;
+                text-align: center;
+                z-index: 9999;
+                font-size: 14px;
+            `;
+            installBanner.innerHTML = `
+                📱 アプリとしてインストールできます！
+                <button onclick="installPWA()" style="margin-left: 10px; padding: 5px 15px; background: white; color: #007aff; border: none; border-radius: 5px; cursor: pointer;">
+                    インストール
+                </button>
+                <button onclick="this.parentElement.remove()" style="margin-left: 5px; padding: 5px 10px; background: transparent; color: white; border: 1px solid white; border-radius: 5px; cursor: pointer;">
+                    ×
+                </button>
+            `;
+            document.body.insertBefore(installBanner, document.body.firstChild);
+        }
+
+        window.installPWA = async function() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                deferredPrompt = null;
+            }
+        };
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDate();
+            updatePreview();
+
+            // 背景選択
+            document.querySelectorAll('.bg-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.bg-option').forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    changeBackground(this.dataset.bg);
+                });
+            });
+
+            // リアルタイム更新
+            document.getElementById('taskInput').addEventListener('input', updatePreview);
+        });
+    </script>
+</body>
+</html>
