@@ -299,8 +299,20 @@
         }
 
         // 壁紙ダウンロード
-        async function downloadWallpaper() {
+        function downloadWallpaper() {
             alert('ダウンロード関数が呼ばれました');
+            
+            // html2canvasが読み込まれているかチェック
+            if (typeof html2canvas === 'undefined') {
+                alert('❌ html2canvasライブラリが読み込まれていません');
+                return;
+            }
+            
+            downloadWallpaperAsync();
+        }
+        
+        async function downloadWallpaperAsync() {
+            alert('非同期関数開始');
             const preview = document.getElementById('preview');
 
             try {
