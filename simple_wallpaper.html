@@ -78,7 +78,8 @@
       }
 
       .preview {
-        width: 90%;
+        width: 85%;
+        max-width: 375px;
         height: 812px;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         margin: 20px auto;
@@ -88,7 +89,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 80px 40px;
+        padding: 80px 30px;
         text-align: center;
         color: white;
         font-size: 16px;
@@ -96,6 +97,7 @@
         box-sizing: border-box;
         word-wrap: break-word;
         overflow-wrap: break-word;
+        overflow: hidden;
       }
 
       .preview-date {
@@ -236,9 +238,11 @@
         }
 
         .preview {
-          width: 280px;
+          width: 85%;
+          max-width: 280px;
           height: 600px;
           margin: 15px auto;
+          padding: 60px 20px;
         }
 
         button {
