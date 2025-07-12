@@ -393,16 +393,29 @@
         const preview = document.getElementById("preview");
 
         try {
+          // 一時的にプレビューのサイズを固定
+          const originalWidth = preview.style.width;
+          const originalMaxWidth = preview.style.maxWidth;
+          
+          preview.style.width = '375px';
+          preview.style.maxWidth = '375px';
+          
+          // 少し待ってからキャプチャ
+          await new Promise(resolve => setTimeout(resolve, 100));
+          
           // html2canvasでプレビューを画像に変換
           const canvas = await html2canvas(preview, {
-            width: 375,
-            height: 812,
-            scale: 2,
+            scale: 3,
             backgroundColor: null,
             logging: false,
             useCORS: true,
             allowTaint: true,
+            foreignObjectRendering: true
           });
+          
+          // 元のスタイルに戻す
+          preview.style.width = originalWidth;
+          preview.style.maxWidth = originalMaxWidth;
 
           const dataURL = canvas.toDataURL("image/png", 1.0);
 
