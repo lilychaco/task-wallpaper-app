@@ -300,9 +300,11 @@
 
         // 壁紙ダウンロード
         async function downloadWallpaper() {
+            alert('ダウンロード関数が呼ばれました');
             const preview = document.getElementById('preview');
 
             try {
+                alert('html2canvas開始');
                 const canvas = await html2canvas(preview, {
                     width: 375,
                     height: 812,
@@ -319,7 +321,7 @@
                 showImageModal(dataURL);
             } catch (error) {
                 console.error('ダウンロードエラー:', error);
-                alert('❌ ダウンロードに失敗しました。');
+                alert('❌ エラー: ' + error.message);
             }
         }
 
