@@ -51,6 +51,7 @@
             border-radius: 8px;
             margin-bottom: 20px;
             border-left: 4px solid #007aff;
+            overflow: hidden;
         }
 
         .step h3 {
@@ -59,7 +60,7 @@
         }
 
         textarea {
-            width: 100%;
+            width: calc(100% - 4px);
             height: 200px;
             padding: 15px;
             border: 2px solid #d2d2d7;
@@ -68,6 +69,8 @@
             font-family: inherit;
             resize: vertical;
             box-sizing: border-box;
+            margin: 0;
+            display: block;
         }
 
         .preview {
