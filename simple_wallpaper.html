@@ -235,7 +235,7 @@
 
         <div class="buttons">
             <button onclick="updatePreview()">🔄 プレビュー更新</button>
-            <button onclick="downloadWallpaper()">📱 壁紙をダウンロード</button>
+            <button id="downloadBtn">📱 壁紙を表示</button>
         </div>
 
         <div class="instruction">
@@ -299,7 +299,11 @@
         }
 
         // 壁紙ダウンロード
-        async function downloadWallpaper() {
+        function downloadWallpaper() {
+            generateWallpaper();
+        }
+        
+        async function generateWallpaper() {
             const preview = document.getElementById('preview');
             
             try {
@@ -508,6 +512,13 @@
 
             // リアルタイム更新
             document.getElementById('taskInput').addEventListener('input', updatePreview);
+            
+            // ダウンロードボタンにイベントリスナーを追加
+            document.getElementById('downloadBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                downloadWallpaper();
+            });
         });
     </script>
 </body>
